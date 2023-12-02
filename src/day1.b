@@ -38,69 +38,7 @@ AND calibrate() BE
 	eof := FALSE
 
 	sumcal := 0
-/*
-	//part 2
-	{	LET one,two,three,four,five,six,seven,eight,nine = 
-		"one","two","three","four","five","six","seven","eight","nine"
-		
-		LET d1,d2 = 0,0
-		LET p = 1
-		LET ln = fread_line()
-		eof := result2
-		{	TEST isnumeric(ln%p) THEN { d1 := ln%p - '0'; p +:= 1; BREAK }
-			ELSE TEST ln%p = 'o' THEN 
-				IF strstr(ln, one, p) ~= -1 { p +:= one%0; d1 := 1; BREAK }
-			ELSE TEST ln%p = 't' THEN
-			{	IF strstr(ln, two, p) ~= -1 	{ p +:= two%0; d1 := 2; BREAK }
-				IF strstr(ln, three, p) ~= -1 	{ p +:= three%0; d1 := 3; BREAK }
-			}
-			ELSE TEST ln%p = 'f' THEN
-			{	IF strstr(ln, four, p) ~= -1 	{ p +:= four%0; d1 := 4; BREAK }
-				IF strstr(ln, five, p) ~= -1 	{ p +:= five%0; d1 := 5; BREAK }
-			}
-			ELSE TEST ln%p = 's' THEN
-			{	IF strstr(ln, six, p) ~= -1 	{ p +:= six%0; d1 := 6; BREAK }
-				IF strstr(ln, seven, p) ~= -1 	{ p +:= seven%0; d1 := 7; BREAK }
-			}
-			ELSE TEST ln%p = 'e' THEN 
-				IF strstr(ln, eight, p) ~= -1 	{ p +:= eight%0; d1 := 8; BREAK }
-			ELSE IF ln%p = 'n' THEN 
-				IF strstr(ln, nine, p) ~= -1 	{ p +:= nine%0; d1 := 9; BREAK }
-			p +:= 1
-		}	REPEATUNTIL p > ln%0
 
-		p := ln%0
-
-		{	TEST isnumeric(ln%p) THEN { d2 := ln%p - '0'; p +:= 1; BREAK }
-			ELSE TEST ln%p = 'o' THEN 
-				IF strstr(ln, one, p) ~= -1 { p +:= one%0; d2 := 1; BREAK }
-			ELSE TEST ln%p = 't' THEN
-			{	IF strstr(ln, two, p) ~= -1 	{ p +:= two%0; d2 := 2; BREAK }
-				IF strstr(ln, three, p) ~= -1 	{ p +:= three%0; d2 := 3; BREAK }
-			}
-			ELSE TEST ln%p = 'f' THEN
-			{	IF strstr(ln, four, p) ~= -1 	{ p +:= four%0; d2 := 4; BREAK }
-				IF strstr(ln, five, p) ~= -1 	{ p +:= five%0; d2 := 5; BREAK }
-			}
-			ELSE TEST ln%p = 's' THEN
-			{	IF strstr(ln, six, p) ~= -1 	{ p +:= six%0; d2 := 6; BREAK }
-				IF strstr(ln, seven, p) ~= -1 	{ p +:= seven%0; d2 := 7; BREAK }
-			}
-			ELSE TEST ln%p = 'e' THEN 
-				IF strstr(ln, eight, p) ~= -1 	{ p +:= eight%0; d2 := 8; BREAK }
-			ELSE IF ln%p = 'n' THEN 
-				IF strstr(ln, nine, p) ~= -1 	{ p +:= nine%0; d2 := 9; BREAK }
-			p -:= 1
-		} REPEATUNTIL p = 0
-		writef("method 1  %d %d *n", d1, d2)
-		sumcal +:= (d1 * 10) + d2
-	} REPEATUNTIL eof = TRUE
-
-	writef("method 1 sumcal %d *n", sumcal)
-	sumcal := 0
-	eof := FALSE
-	reset_infile()
-*/
 	//Part 2
 	{	LET d1,d2 = 0,0
 		LET ln = fread_line()
@@ -134,26 +72,6 @@ AND strstr(str, substr, sp) = VALOF
 	RESULTIS pos
 }
 
-AND strrstr(str, substr, sp) = VALOF
-{	LET pos = -1
-	LET maybefound = TRUE
-	IF sp > (str%0 - substr%0) RESULTIS pos
-	FOR i = sp TO str%0 BY -1 DO
-	{	LET c = str%i
-		IF c = substr%1 THEN
-		{	LET k = 1
-			FOR j = 2 TO substr%0 DO
-			{	IF substr%j ~= str%(i+k) THEN
-				{ maybefound := FALSE; BREAK }
-				k +:= 1
-			}
-			IF maybefound = TRUE THEN pos := i
-			BREAK
-		}
-	}
-	RESULTIS pos
-}
-
 AND lr_cmp(line, pos) = pos > line%0 -> TRUE, FALSE
 AND rl_cmp(line, pos) = pos = 0 -> TRUE, FALSE
 
@@ -163,25 +81,25 @@ AND finddigit(line, dir, cmp_fn, srch_fn) = VALOF
 		"one","two","three","four","five","six","seven","eight","nine"
 
 	IF dir = RTOL THEN p := line%0
-	{	TEST isnumeric(line%p) THEN 		RESULTIS line%p - '0' 
+	{	TEST isnumeric(line%p) THEN 			RESULTIS line%p - '0' 
 		ELSE TEST line%p = 'o' THEN 
-			IF srch_fn(line, one, p) ~= -1 	RESULTIS 1 
+			IF srch_fn(line, one, p) ~= -1		RESULTIS 1 
 		ELSE TEST line%p = 't' THEN
-		{	IF srch_fn(line, two, p) ~= -1 	RESULTIS 2
-			IF srch_fn(line, three, p) ~= -1 RESULTIS 3
+		{	IF srch_fn(line, two, p) ~= -1		RESULTIS 2
+			IF srch_fn(line, three, p) ~= -1 	RESULTIS 3
 		}
 		ELSE TEST line%p = 'f' THEN
 		{	IF srch_fn(line, four, p) ~= -1 	RESULTIS 4
 			IF srch_fn(line, five, p) ~= -1 	RESULTIS 5
 		}
 		ELSE TEST line%p = 's' THEN
-		{	IF srch_fn(line, six, p) ~= -1 	RESULTIS 6
-			IF srch_fn(line, seven, p) ~= -1 RESULTIS 7
+		{	IF srch_fn(line, six, p) ~= -1 		RESULTIS 6
+			IF srch_fn(line, seven, p) ~= -1	RESULTIS 7
 		}
 		ELSE TEST line%p = 'e' THEN 
-			IF srch_fn(line, eight, p) ~= -1 RESULTIS 8
+			IF srch_fn(line, eight, p) ~= -1	RESULTIS 8
 		ELSE IF line%p = 'n' THEN 
-			IF srch_fn(line, nine, p) ~= -1 RESULTIS 9
+			IF srch_fn(line, nine, p) ~= -1		RESULTIS 9
 		TEST dir = RTOL THEN p -:= 1
 		ELSE p +:= 1
 	}	REPEATUNTIL cmp_fn(line, p)
